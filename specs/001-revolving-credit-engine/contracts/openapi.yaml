@@ -1,0 +1,163 @@
+openapi: 3.0.3
+info:
+  title: Revolving Credit Rule Engine API
+  version: "1.0.0"
+  description: >
+    API de avaliação e liberação de crédito rotativo (case Itaú). Cobre FR-001 a FR-013.
+    O mesmo motor é reaproveitado pelo runner de lote (FR-014), que não é exposto via HTTP.
+servers:
+  - url: http://localhost:8081
+paths:
+  /api/v1/avaliacoes:
+    post:
+      summary: Avalia um ou mais clientes e retorna a decisão de crédito rotativo de cada um
+      operationId: avaliarClientes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AvaliacaoRequest'
+      responses:
+        '200':
+          description: >
+            Lote avaliado. Retorna 200 mesmo se algum cliente individual for inválido —
+            o erro daquele registro específico vem em `invalidos`, o lote continua (edge case
+            "dados incompletos" do spec).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AvaliacaoResponse'
+        '400':
+          description: >
+            Corpo da requisição malformado (JSON inválido, campo `clientes` ausente). Uma lista
+            `clientes` vazia (`[]`) é válida e retorna 200 com um relatório vazio (edge case
+            "lote vazio" do spec.md).
+  /actuator/health:
+    get:
+      summary: Health check padrão do Spring Boot Actuator
+      responses:
+        '200':
+          description: Serviço saudável
+  /actuator/prometheus:
+    get:
+      summary: Métricas no formato Prometheus (volume de avaliações, taxa aprovação/reprovação, latência)
+      responses:
+        '200':
+          description: Métricas expostas para scrape
+components:
+  schemas:
+    ComportamentoGastoMensal:
+      type: object
+      required: [mes, valor]
+      properties:
+        mes:
+          type: string
+          example: "2026-06"
+        valor:
+          type: number
+          format: double
+    ClienteInput:
+      type: object
+      required:
+        - cpf
+        - nome
+        - scoreCredito
+        - valorFaturaAtual
+        - limiteDisponivel
+        - numeroAtrasos
+        - comportamentoGastos
+      properties:
+        cpf:
+          type: string
+          example: "12345678901"
+        nome:
+          type: string
+        scoreCredito:
+          type: integer
+          minimum: 0
+          maximum: 1000
+        valorFaturaAtual:
+          type: number
+          format: double
+          minimum: 0
+        limiteDisponivel:
+          type: number
+          format: double
+          minimum: 0
+        numeroAtrasos:
+          type: integer
+          minimum: 0
+        comportamentoGastos:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ComportamentoGastoMensal'
+    AvaliacaoRequest:
+      type: object
+      required: [clientes]
+      properties:
+        clientes:
+          type: array
+          minItems: 0
+          description: Lista de clientes a avaliar; uma lista vazia é válida (edge case "lote vazio")
+          items:
+            $ref: '#/components/schemas/ClienteInput'
+    MotivoRegra:
+      type: object
+      properties:
+        nomeRegra:
+          type: string
+          example: RegraScoreMinimo
+        aprovada:
+          type: boolean
+        detalhe:
+          type: string
+          example: "score 550 abaixo do mínimo 600"
+    DecisaoAvaliacao:
+      type: object
+      properties:
+        cpf:
+          type: string
+        status:
+          type: string
+          enum: [APROVADO, REPROVADO]
+        valorLiberado:
+          type: number
+          format: double
+        motivos:
+          type: array
+          items:
+            $ref: '#/components/schemas/MotivoRegra'
+        avaliadoEm:
+          type: string
+          format: date-time
+    ClienteInvalido:
+      type: object
+      properties:
+        cpf:
+          type: string
+          nullable: true
+        motivo:
+          type: string
+          example: "scoreCredito ausente"
+    AvaliacaoResponse:
+      type: object
+      properties:
+        resumo:
+          type: object
+          properties:
+            totalAvaliados:
+              type: integer
+            totalAprovados:
+              type: integer
+            totalReprovados:
+              type: integer
+        decisoes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DecisaoAvaliacao'
+        invalidos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClienteInvalido'
