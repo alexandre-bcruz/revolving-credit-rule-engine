@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: revolving-credit-postgres
+    environment:
+      POSTGRES_DB: revolving_credit
+      POSTGRES_USER: revolving_credit
+      POSTGRES_PASSWORD: revolving_credit
+    ports:
+      - "5433:5432"
+    volumes:
+      - revolving-credit-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U revolving_credit -d revolving_credit"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  revolving-credit-pgdata:
