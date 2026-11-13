@@ -1,3 +1,57 @@
 spring:
   application:
     name: revolving-credit-rule-engine
+  datasource:
+    url: jdbc:postgresql://localhost:5433/revolving_credit
+    username: revolving_credit
+    password: revolving_credit
+    hikari:
+      connection-timeout: 1000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus,metrics
+  endpoint:
+    health:
+      show-details: never
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+resilience4j:
+  retry:
+    instances:
+      persistencia-decisao:
+        max-attempts: 3
+        wait-duration: 100ms
+        ignore-exceptions:
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+  circuitbreaker:
+    instances:
+      persistencia-decisao:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n"
+
+app:
+  batch:
+    fixture-path: fixtures/clientes-demo.json
+    report-output-path: fixtures/relatorio-demo.json
