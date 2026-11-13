@@ -1,0 +1,133 @@
+{
+  "resumo" : {
+    "totalAvaliados" : 5,
+    "totalAprovados" : 3,
+    "totalReprovados" : 2
+  },
+  "decisoes" : [ {
+    "cpf" : "10000000001",
+    "status" : "APROVADO",
+    "valorLiberado" : 1992.60,
+    "motivos" : [ {
+      "nomeRegra" : "RegraAtrasosMaximos",
+      "aprovada" : true,
+      "detalhe" : "numeroAtrasos 0 dentro do máximo de 2"
+    }, {
+      "nomeRegra" : "RegraFaturaSobreLimite",
+      "aprovada" : true,
+      "detalhe" : "comprometimento 0.1000 dentro do máximo de 0.8"
+    }, {
+      "nomeRegra" : "RegraLimiteMinimoAbsoluto",
+      "aprovada" : true,
+      "detalhe" : "limiteDisponivel 2700.00 atende ao mínimo absoluto de 50"
+    }, {
+      "nomeRegra" : "RegraScoreMinimo",
+      "aprovada" : true,
+      "detalhe" : "score 820 atende ao mínimo de 600"
+    }, {
+      "nomeRegra" : "RegraTendenciaDeGastos",
+      "aprovada" : true,
+      "detalhe" : "crescimento médio de gastos 0.043568 dentro do máximo de 0.3"
+    } ]
+  }, {
+    "cpf" : "10000000002",
+    "status" : "REPROVADO",
+    "valorLiberado" : 0,
+    "motivos" : [ {
+      "nomeRegra" : "RegraAtrasosMaximos",
+      "aprovada" : false,
+      "detalhe" : "numeroAtrasos 4 acima do máximo de 2"
+    }, {
+      "nomeRegra" : "RegraFaturaSobreLimite",
+      "aprovada" : false,
+      "detalhe" : "comprometimento 0.9000 acima do máximo de 0.8"
+    }, {
+      "nomeRegra" : "RegraLimiteMinimoAbsoluto",
+      "aprovada" : true,
+      "detalhe" : "limiteDisponivel 200.00 atende ao mínimo absoluto de 50"
+    }, {
+      "nomeRegra" : "RegraScoreMinimo",
+      "aprovada" : false,
+      "detalhe" : "score 540 abaixo do mínimo de 600"
+    }, {
+      "nomeRegra" : "RegraTendenciaDeGastos",
+      "aprovada" : false,
+      "detalhe" : "crescimento médio de gastos 1.285714 acima do máximo de 0.3"
+    } ]
+  }, {
+    "cpf" : "10000000003",
+    "status" : "APROVADO",
+    "valorLiberado" : 731.25,
+    "motivos" : [ {
+      "nomeRegra" : "RegraAtrasosMaximos",
+      "aprovada" : true,
+      "detalhe" : "numeroAtrasos 1 dentro do máximo de 2"
+    }, {
+      "nomeRegra" : "RegraFaturaSobreLimite",
+      "aprovada" : true,
+      "detalhe" : "comprometimento 0.2500 dentro do máximo de 0.8"
+    }, {
+      "nomeRegra" : "RegraLimiteMinimoAbsoluto",
+      "aprovada" : true,
+      "detalhe" : "limiteDisponivel 1500.00 atende ao mínimo absoluto de 50"
+    }, {
+      "nomeRegra" : "RegraScoreMinimo",
+      "aprovada" : true,
+      "detalhe" : "score 650 atende ao mínimo de 600"
+    }, {
+      "nomeRegra" : "RegraTendenciaDeGastos",
+      "aprovada" : true,
+      "detalhe" : "crescimento médio de gastos 0.120238 dentro do máximo de 0.3"
+    } ]
+  }, {
+    "cpf" : "10000000004",
+    "status" : "APROVADO",
+    "valorLiberado" : 24.00,
+    "motivos" : [ {
+      "nomeRegra" : "RegraAtrasosMaximos",
+      "aprovada" : true,
+      "detalhe" : "numeroAtrasos 2 dentro do máximo de 2"
+    }, {
+      "nomeRegra" : "RegraFaturaSobreLimite",
+      "aprovada" : true,
+      "detalhe" : "comprometimento 0.8000 dentro do máximo de 0.8"
+    }, {
+      "nomeRegra" : "RegraLimiteMinimoAbsoluto",
+      "aprovada" : true,
+      "detalhe" : "limiteDisponivel 200.00 atende ao mínimo absoluto de 50"
+    }, {
+      "nomeRegra" : "RegraScoreMinimo",
+      "aprovada" : true,
+      "detalhe" : "score 600 atende ao mínimo de 600"
+    }, {
+      "nomeRegra" : "RegraTendenciaDeGastos",
+      "aprovada" : true,
+      "detalhe" : "histórico insuficiente para avaliar tendência (1 mês(es))"
+    } ]
+  }, {
+    "cpf" : "10000000005",
+    "status" : "REPROVADO",
+    "valorLiberado" : 0,
+    "motivos" : [ {
+      "nomeRegra" : "RegraAtrasosMaximos",
+      "aprovada" : true,
+      "detalhe" : "numeroAtrasos 0 dentro do máximo de 2"
+    }, {
+      "nomeRegra" : "RegraFaturaSobreLimite",
+      "aprovada" : true,
+      "detalhe" : "comprometimento 0.1000 dentro do máximo de 0.8"
+    }, {
+      "nomeRegra" : "RegraLimiteMinimoAbsoluto",
+      "aprovada" : true,
+      "detalhe" : "limiteDisponivel 900.00 atende ao mínimo absoluto de 50"
+    }, {
+      "nomeRegra" : "RegraScoreMinimo",
+      "aprovada" : true,
+      "detalhe" : "score 710 atende ao mínimo de 600"
+    }, {
+      "nomeRegra" : "RegraTendenciaDeGastos",
+      "aprovada" : false,
+      "detalhe" : "crescimento médio de gastos 0.733334 acima do máximo de 0.3"
+    } ]
+  } ]
+}

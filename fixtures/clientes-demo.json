@@ -1,0 +1,64 @@
+[
+  {
+    "cpf": "10000000001",
+    "nome": "Carla Mendes",
+    "scoreCredito": 820,
+    "valorFaturaAtual": 300.00,
+    "limiteDisponivel": 2700.00,
+    "numeroAtrasos": 0,
+    "comportamentoGastos": [
+      {"mes": "2026-05", "valor": 900.00},
+      {"mes": "2026-06", "valor": 950.00},
+      {"mes": "2026-07", "valor": 980.00}
+    ]
+  },
+  {
+    "cpf": "10000000002",
+    "nome": "Bruno Alves",
+    "scoreCredito": 540,
+    "valorFaturaAtual": 1800.00,
+    "limiteDisponivel": 200.00,
+    "numeroAtrasos": 4,
+    "comportamentoGastos": [
+      {"mes": "2026-06", "valor": 700.00},
+      {"mes": "2026-07", "valor": 1600.00}
+    ]
+  },
+  {
+    "cpf": "10000000003",
+    "nome": "Fernanda Costa",
+    "scoreCredito": 650,
+    "valorFaturaAtual": 500.00,
+    "limiteDisponivel": 1500.00,
+    "numeroAtrasos": 1,
+    "comportamentoGastos": [
+      {"mes": "2026-05", "valor": 400.00},
+      {"mes": "2026-06", "valor": 420.00},
+      {"mes": "2026-07", "valor": 500.00}
+    ]
+  },
+  {
+    "cpf": "10000000004",
+    "nome": "Marcos Silva",
+    "scoreCredito": 600,
+    "valorFaturaAtual": 800.00,
+    "limiteDisponivel": 200.00,
+    "numeroAtrasos": 2,
+    "comportamentoGastos": [
+      {"mes": "2026-07", "valor": 300.00}
+    ]
+  },
+  {
+    "cpf": "10000000005",
+    "nome": "Patricia Rocha",
+    "scoreCredito": 710,
+    "valorFaturaAtual": 100.00,
+    "limiteDisponivel": 900.00,
+    "numeroAtrasos": 0,
+    "comportamentoGastos": [
+      {"mes": "2026-05", "valor": 300.00},
+      {"mes": "2026-06", "valor": 500.00},
+      {"mes": "2026-07", "valor": 900.00}
+    ]
+  }
+]
