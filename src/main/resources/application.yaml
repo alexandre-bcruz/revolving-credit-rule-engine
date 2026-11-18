@@ -54,4 +54,4 @@ logging:
 app:
   batch:
     fixture-path: fixtures/clientes-demo.json
-    report-output-path: fixtures/relatorio-demo.json
+    report-output-dir: relatorios

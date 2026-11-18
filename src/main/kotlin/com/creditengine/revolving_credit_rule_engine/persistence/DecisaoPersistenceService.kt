@@ -3,13 +3,12 @@ package com.creditengine.revolving_credit_rule_engine.persistence
 import com.creditengine.revolving_credit_rule_engine.domain.Cliente
 import com.creditengine.revolving_credit_rule_engine.domain.DecisaoAvaliacao
 import com.creditengine.revolving_credit_rule_engine.observability.LogMasking
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import tools.jackson.databind.json.JsonMapper
 
 /**
  * Escreve cliente + decisão no Postgres. A decisão em si já foi calculada em memória pelo
@@ -27,18 +26,17 @@ import org.springframework.transaction.annotation.Transactional
  * ignorada pelo Retry (ver application.yaml) e cai direto no fallback, sem esperas inúteis —
  * comportamento coberto por DecisaoPersistenceResilienciaTest.
  *
- * O ObjectMapper é instanciado localmente (não injetado) porque este projeto não depende da
- * configuração automática de Jackson do Spring Boot para este uso interno de serialização —
- * evita acoplar a serialização de persistência ao ObjectMapper usado para HTTP.
+ * `comportamentoGastos` é gravado como `jsonb` usando o `JsonMapper` autoconfigurado pelo Spring
+ * Boot — o mesmo da API e do lote, para haver uma única configuração de JSON no serviço.
  */
 @Service
 class DecisaoPersistenceService(
     private val clienteRepository: ClienteRepository,
     private val decisaoRepository: DecisaoRepository,
-    private val resultadoRegraRepository: ResultadoRegraRepository
+    private val resultadoRegraRepository: ResultadoRegraRepository,
+    private val jsonMapper: JsonMapper
 ) {
     private val log = LoggerFactory.getLogger(DecisaoPersistenceService::class.java)
-    private val objectMapper = ObjectMapper().registerModule(JavaTimeModule())
 
     @Retry(name = "persistencia-decisao", fallbackMethod = "aoFalharPersistencia")
     @CircuitBreaker(name = "persistencia-decisao")
@@ -52,7 +50,7 @@ class DecisaoPersistenceService(
                 valorFaturaAtual = cliente.valorFaturaAtual,
                 limiteDisponivel = cliente.limiteDisponivel,
                 numeroAtrasos = cliente.numeroAtrasos,
-                comportamentoGastos = objectMapper.writeValueAsString(cliente.comportamentoGastos)
+                comportamentoGastos = jsonMapper.writeValueAsString(cliente.comportamentoGastos)
             )
         )
         decisaoRepository.save(

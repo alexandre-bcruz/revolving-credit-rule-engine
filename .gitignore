@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Saída do modo lote (um arquivo por execução) ###
+/relatorios/

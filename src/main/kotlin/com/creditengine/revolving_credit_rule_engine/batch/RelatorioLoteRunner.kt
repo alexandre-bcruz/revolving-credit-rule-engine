@@ -1,78 +1,62 @@
 package com.creditengine.revolving_credit_rule_engine.batch
 
-import com.creditengine.revolving_credit_rule_engine.api.dto.ClienteInputDto
-import com.creditengine.revolving_credit_rule_engine.api.dto.ClienteInputMapper
-import com.creditengine.revolving_credit_rule_engine.engine.MotorDeAvaliacao
 import com.creditengine.revolving_credit_rule_engine.observability.LogMasking
-import com.creditengine.revolving_credit_rule_engine.persistence.DecisaoPersistenceService
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
+import tools.jackson.databind.json.JsonMapper
 import java.io.File
-import java.math.BigDecimal
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 /**
- * Modo de execução em lote (FR-014): reaproveita o mesmo MotorDeAvaliacao da API para processar
- * uma lista fictícia de clientes e produzir o relatório consolidado (FR-005) sem chamadas HTTP
- * manuais. Ativado só no profile `batch` (ver application-batch.yaml, que desliga o servidor web
- * para o processo encerrar sozinho ao terminar).
+ * Modo de execução em lote (FR-014): só faz I/O — lê `fixture-path`, delega a [ProcessadorLote]
+ * e grava o relatório em `report-output-dir`, num arquivo novo por execução
+ * (`relatorio-<UTC>.json`), para que uma execução não sobrescreva a anterior. Ativado só no profile `batch` (ver
+ * application-batch.yaml, que desliga o servidor web para o processo encerrar sozinho).
+ *
+ * Usa o `JsonMapper` autoconfigurado pelo Spring Boot (o mesmo da API) — sem mapper próprio.
+ *
+ * Arquivo inexistente ou que não seja um array JSON é erro de configuração: falha rápido, sem
+ * relatório. Registros individuais com problema NÃO derrubam o lote (ver [ProcessadorLote]).
  */
 @Profile("batch")
 @Component
 class RelatorioLoteRunner(
-    private val motor: MotorDeAvaliacao,
-    private val persistenceService: DecisaoPersistenceService,
+    private val processador: ProcessadorLote,
+    private val jsonMapper: JsonMapper,
     @Value("\${app.batch.fixture-path}") private val fixturePath: String,
-    @Value("\${app.batch.report-output-path}") private val reportOutputPath: String
+    @Value("\${app.batch.report-output-dir}") private val reportOutputDir: String
 ) : CommandLineRunner {
 
     private val log = LoggerFactory.getLogger(RelatorioLoteRunner::class.java)
-    private val objectMapper = ObjectMapper().registerKotlinModule().registerModule(JavaTimeModule())
 
     override fun run(vararg args: String) {
-        val clientesInput: List<ClienteInputDto> = objectMapper.readValue(
-            File(fixturePath),
-            objectMapper.typeFactory.constructCollectionType(List::class.java, ClienteInputDto::class.java)
-        )
+        val raiz = jsonMapper.readTree(File(fixturePath))
+        require(raiz.isArray) { "Arquivo de lote $fixturePath deve conter um array JSON de clientes" }
 
-        val decisoes = clientesInput.map { input ->
-            val cliente = ClienteInputMapper.paraDominio(input)
-            val decisao = motor.avaliar(cliente)
-            persistenceService.persistir(cliente, decisao)
-            mapOf(
-                "cpf" to decisao.clienteCpf,
-                "status" to decisao.status.name,
-                "valorLiberado" to decisao.valorLiberado,
-                "motivos" to decisao.motivos
-            )
-        }
+        val relatorio = processador.processar(raiz.values().toList())
 
-        val relatorio = mapOf(
-            "resumo" to mapOf(
-                "totalAvaliados" to decisoes.size,
-                "totalAprovados" to decisoes.count { it["status"] == "APROVADO" },
-                "totalReprovados" to decisoes.count { it["status"] == "REPROVADO" }
-            ),
-            "decisoes" to decisoes
-        )
-
-        val outputFile = File(reportOutputPath)
+        val outputFile = File(reportOutputDir, nomeDoArquivo(relatorio.geradoEm))
         outputFile.parentFile?.mkdirs()
-        objectMapper.writerWithDefaultPrettyPrinter().writeValue(outputFile, relatorio)
+        jsonMapper.writerWithDefaultPrettyPrinter().writeValue(outputFile, relatorio)
 
-        log.info("Relatório em lote gerado: {} clientes avaliados -> {}", decisoes.size, reportOutputPath)
-        decisoes.forEach {
+        with(relatorio.resumo) {
             log.info(
-                "cpf={} status={} valorLiberado={}",
-                LogMasking.mascararCpf(it["cpf"] as String),
-                it["status"],
-                LogMasking.mascararValor(it["valorLiberado"] as BigDecimal)
+                "Relatório em lote gerado: recebidos={} aprovados={} reprovados={} invalidos={} valorTotalLiberado={} -> {}",
+                totalRecebidos, totalAprovados, totalReprovados, totalInvalidos,
+                LogMasking.mascararValor(valorTotalLiberado), outputFile.path
             )
         }
+    }
+
+    companion object {
+        private val FORMATO_NOME = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneOffset.UTC)
+
+        /** Ex.: `relatorio-20261118T093000Z.json`. Ordena cronologicamente e é seguro em qualquer sistema de arquivos. */
+        internal fun nomeDoArquivo(geradoEm: Instant): String = "relatorio-${FORMATO_NOME.format(geradoEm)}.json"
     }
 }
