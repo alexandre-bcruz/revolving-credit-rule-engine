@@ -1,10 +1,16 @@
 {
+  "geradoEm" : "2026-11-18T10:15:31.639329Z",
   "resumo" : {
+    "totalRecebidos" : 7,
     "totalAvaliados" : 5,
     "totalAprovados" : 3,
-    "totalReprovados" : 2
+    "totalReprovados" : 2,
+    "totalInvalidos" : 2,
+    "valorTotalLiberado" : 2747.85
   },
-  "decisoes" : [ {
+  "aprovados" : [ {
+    "decisaoId" : "a972ada8-8aef-45d8-b0f0-9f54668c4008",
+    "avaliadoEm" : "2026-11-18T10:15:31.561103Z",
     "cpf" : "10000000001",
     "status" : "APROVADO",
     "valorLiberado" : 1992.60,
@@ -19,7 +25,7 @@
     }, {
       "nomeRegra" : "RegraLimiteMinimoAbsoluto",
       "aprovada" : true,
-      "detalhe" : "limiteDisponivel 2700.00 atende ao mínimo absoluto de 50"
+      "detalhe" : "limiteDisponivel 2700.0 atende ao mínimo absoluto de 50"
     }, {
       "nomeRegra" : "RegraScoreMinimo",
       "aprovada" : true,
@@ -30,31 +36,8 @@
       "detalhe" : "crescimento médio de gastos 0.043568 dentro do máximo de 0.3"
     } ]
   }, {
-    "cpf" : "10000000002",
-    "status" : "REPROVADO",
-    "valorLiberado" : 0,
-    "motivos" : [ {
-      "nomeRegra" : "RegraAtrasosMaximos",
-      "aprovada" : false,
-      "detalhe" : "numeroAtrasos 4 acima do máximo de 2"
-    }, {
-      "nomeRegra" : "RegraFaturaSobreLimite",
-      "aprovada" : false,
-      "detalhe" : "comprometimento 0.9000 acima do máximo de 0.8"
-    }, {
-      "nomeRegra" : "RegraLimiteMinimoAbsoluto",
-      "aprovada" : true,
-      "detalhe" : "limiteDisponivel 200.00 atende ao mínimo absoluto de 50"
-    }, {
-      "nomeRegra" : "RegraScoreMinimo",
-      "aprovada" : false,
-      "detalhe" : "score 540 abaixo do mínimo de 600"
-    }, {
-      "nomeRegra" : "RegraTendenciaDeGastos",
-      "aprovada" : false,
-      "detalhe" : "crescimento médio de gastos 1.285714 acima do máximo de 0.3"
-    } ]
-  }, {
+    "decisaoId" : "24dcc240-3968-4ef7-8817-b3b884bf8068",
+    "avaliadoEm" : "2026-11-18T10:15:31.620481Z",
     "cpf" : "10000000003",
     "status" : "APROVADO",
     "valorLiberado" : 731.25,
@@ -69,7 +52,7 @@
     }, {
       "nomeRegra" : "RegraLimiteMinimoAbsoluto",
       "aprovada" : true,
-      "detalhe" : "limiteDisponivel 1500.00 atende ao mínimo absoluto de 50"
+      "detalhe" : "limiteDisponivel 1500.0 atende ao mínimo absoluto de 50"
     }, {
       "nomeRegra" : "RegraScoreMinimo",
       "aprovada" : true,
@@ -80,6 +63,8 @@
       "detalhe" : "crescimento médio de gastos 0.120238 dentro do máximo de 0.3"
     } ]
   }, {
+    "decisaoId" : "a1d19a73-93fc-4768-beac-14b6114a42b8",
+    "avaliadoEm" : "2026-11-18T10:15:31.625846Z",
     "cpf" : "10000000004",
     "status" : "APROVADO",
     "valorLiberado" : 24.00,
@@ -94,7 +79,7 @@
     }, {
       "nomeRegra" : "RegraLimiteMinimoAbsoluto",
       "aprovada" : true,
-      "detalhe" : "limiteDisponivel 200.00 atende ao mínimo absoluto de 50"
+      "detalhe" : "limiteDisponivel 200.0 atende ao mínimo absoluto de 50"
     }, {
       "nomeRegra" : "RegraScoreMinimo",
       "aprovada" : true,
@@ -104,7 +89,37 @@
       "aprovada" : true,
       "detalhe" : "histórico insuficiente para avaliar tendência (1 mês(es))"
     } ]
+  } ],
+  "reprovados" : [ {
+    "decisaoId" : "e3f674c2-2a8f-4afc-bb6d-1d42ad7ed693",
+    "avaliadoEm" : "2026-11-18T10:15:31.612897Z",
+    "cpf" : "10000000002",
+    "status" : "REPROVADO",
+    "valorLiberado" : 0,
+    "motivos" : [ {
+      "nomeRegra" : "RegraAtrasosMaximos",
+      "aprovada" : false,
+      "detalhe" : "numeroAtrasos 4 acima do máximo de 2"
+    }, {
+      "nomeRegra" : "RegraFaturaSobreLimite",
+      "aprovada" : false,
+      "detalhe" : "comprometimento 0.9000 acima do máximo de 0.8"
+    }, {
+      "nomeRegra" : "RegraLimiteMinimoAbsoluto",
+      "aprovada" : true,
+      "detalhe" : "limiteDisponivel 200.0 atende ao mínimo absoluto de 50"
+    }, {
+      "nomeRegra" : "RegraScoreMinimo",
+      "aprovada" : false,
+      "detalhe" : "score 540 abaixo do mínimo de 600"
+    }, {
+      "nomeRegra" : "RegraTendenciaDeGastos",
+      "aprovada" : false,
+      "detalhe" : "crescimento médio de gastos 1.285714 acima do máximo de 0.3"
+    } ]
   }, {
+    "decisaoId" : "7f4ebc63-16dd-4168-94c1-2b60bae3bfa1",
+    "avaliadoEm" : "2026-11-18T10:15:31.631349Z",
     "cpf" : "10000000005",
     "status" : "REPROVADO",
     "valorLiberado" : 0,
@@ -119,7 +134,7 @@
     }, {
       "nomeRegra" : "RegraLimiteMinimoAbsoluto",
       "aprovada" : true,
-      "detalhe" : "limiteDisponivel 900.00 atende ao mínimo absoluto de 50"
+      "detalhe" : "limiteDisponivel 900.0 atende ao mínimo absoluto de 50"
     }, {
       "nomeRegra" : "RegraScoreMinimo",
       "aprovada" : true,
@@ -129,5 +144,14 @@
       "aprovada" : false,
       "detalhe" : "crescimento médio de gastos 0.733334 acima do máximo de 0.3"
     } ]
+  } ],
+  "invalidos" : [ {
+    "indice" : 5,
+    "cpf" : "123",
+    "motivo" : "cpf: cpf deve ter 11 dígitos numéricos"
+  }, {
+    "indice" : 6,
+    "cpf" : "10000000007",
+    "motivo" : "formato inválido no campo 'scoreCredito'"
   } ]
 }

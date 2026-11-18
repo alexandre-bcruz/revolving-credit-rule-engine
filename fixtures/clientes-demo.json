@@ -60,5 +60,27 @@
       {"mes": "2026-06", "valor": 500.00},
       {"mes": "2026-07", "valor": 900.00}
     ]
+  },
+  {
+    "cpf": "123",
+    "nome": "Registro Invalido Validacao",
+    "scoreCredito": 700,
+    "valorFaturaAtual": 100.00,
+    "limiteDisponivel": 900.00,
+    "numeroAtrasos": 0,
+    "comportamentoGastos": [
+      {"mes": "2026-07", "valor": 300.00}
+    ]
+  },
+  {
+    "cpf": "10000000007",
+    "nome": "Registro Invalido Formato",
+    "scoreCredito": "setecentos",
+    "valorFaturaAtual": 100.00,
+    "limiteDisponivel": 900.00,
+    "numeroAtrasos": 0,
+    "comportamentoGastos": [
+      {"mes": "2026-07", "valor": 300.00}
+    ]
   }
 ]

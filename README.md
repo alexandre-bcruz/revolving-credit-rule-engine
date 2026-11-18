@@ -15,7 +15,7 @@ Kotlin 2.0.0 / JVM 21, Spring Boot 4.1.0 (Web, Data JPA, Validation, Actuator), 
 
 ## Como rodar
 
-Pré-requisitos: JDK 21+, Docker.
+Pré-requisitos: JDK 21 (o compilador Kotlin desta versão falha em JDK 25), Docker.
 
 ```bash
 make db-up      # sobe o Postgres (docker compose), espera ficar healthy
@@ -49,11 +49,21 @@ curl -X POST http://localhost:8081/api/v1/avaliacoes \
 ```
 
 Gerar o relatório em lote (reaproveita o mesmo motor, processa `fixtures/clientes-demo.json` e
-grava `fixtures/relatorio-demo.json`):
+grava um arquivo novo por execução em `relatorios/relatorio-<data-hora UTC>.json`, fora do git;
+um exemplo de saída fica versionado em `fixtures/relatorio-demo.json`):
 
 ```bash
 make run-batch
 ```
+
+O relatório traz `geradoEm`, um `resumo` (recebidos, avaliados, aprovados, reprovados, inválidos e
+valor total liberado) e as seções `aprovados`, `reprovados` e `invalidos`. Cada item avaliado traz
+o `decisaoId` e o `avaliadoEm` gravados em `decisao_avaliacao`, para cruzar o relatório com a auditoria
+no banco. Cada registro é isolado: um cliente
+que viola a validação ou que tem um campo com tipo errado no JSON vai para `invalidos` (com o
+índice no arquivo e o motivo) sem impedir a avaliação dos demais. A fixture de demonstração inclui
+de propósito dois registros assim. O CPF aparece completo no relatório por ser o artefato de
+negócio consumido pela área de crédito, assim como na resposta da API; nos logs ele é sempre mascarado.
 
 Rodar os testes (sobe Postgres efêmero via Testcontainers — não depende do `make db-up`):
 
@@ -144,6 +154,9 @@ alternativas consideradas em
 
 - **Unitários** (JUnit5 + kotlin-test): uma classe por regra, cobrindo aprovação, reprovação e
   fronteira; `MotorDeAvaliacao` isolado com regras falsas.
+- **Lote**: `ProcessadorLoteTest` cobre o isolamento por registro (tipo errado no JSON, violação de
+  validação, mês mal formatado), campos desconhecidos ignorados como na API, lote vazio e a soma do
+  valor liberado.
 - **Wiring**: `MotorDeAvaliacaoSpringWiringTest` prova a extensibilidade via Spring DI sem subir
   banco.
 - **Contrato HTTP + integração**: `AvaliacaoControllerTest`, `AvaliacaoIntegrationTest` e
